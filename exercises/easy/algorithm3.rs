@@ -8,10 +8,10 @@ fn sort<T: std::cmp::PartialOrd + std::fmt::Display>(array: &mut [T]) {
     // Use insert sorting for the simplicity
     // TODO: implement other sort later,bubble and quick sort!
 
-    for i in 1..array.len() {
+    for i in 0..array.len() {
         for j in (0..i).rev() {
             if array[j] > array[j+1] {
-                array.swap(j,j+1)
+                array.swap(j, j+1);
             } else {
                 break;
             }
