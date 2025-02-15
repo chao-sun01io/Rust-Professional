@@ -47,13 +47,26 @@ where
 
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
-        Self::insert_sub_tree(&mut self.root, value)
+        // method1:
+        // Self::insert_sub_tree(&mut self.root, value)
+
+        if let Some(ref mut node) = self.root {
+            node.insert(value);
+        } else {
+            self.root = Some(Box::new(TreeNode::new(value)));
+        }
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
-        //TODO
-        Self::search_sub_tree(&self.root,value)
+        // method1:
+        // Self::search_sub_tree(&self.root,value)
+        
+        if let Some(ref node) = self.root {
+            node.search(value)
+        } else {
+            false
+        }
     }
 
     // helper function to insert subtree
@@ -90,9 +103,33 @@ where
     T: Ord,
 {
     // Insert a node into the tree
-    // fn insert(&mut self, value: T) {
-    //     //TODO
-    // }
+    fn insert(&mut self, value: T) {
+        match value.cmp(&self.value) {
+            Ordering::Less => match self.left {
+                Some(ref mut node) => node.insert(value),
+                None => self.left = Some(Box::new(TreeNode::new(value))),
+            },
+            Ordering::Greater => match self.right {
+                Some(ref mut node) => node.insert(value),
+                None => self.right = Some(Box::new(TreeNode::new(value))),
+            },
+            Ordering::Equal => {}
+        }
+    }
+
+    fn search(&self, value: T) -> bool {
+        match value.cmp(&self.value) {
+            Ordering::Equal => true,
+            Ordering::Less => match self.left {
+                Some(ref node) => node.search(value),
+                None => false,
+            },
+            Ordering::Greater => match self.right {
+                Some(ref node) => node.search(value),
+                None => false,
+            },
+        }
+    }
 }
 
 #[cfg(test)]
