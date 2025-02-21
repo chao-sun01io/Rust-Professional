@@ -32,3 +32,21 @@ cargo run all
 
 **完成实验后请及时加入项目阶段群，群聊二维码在完成试验后会显示在排行榜页面。**
 
+
+## Tips 
+
+How to let cargo find all tests in exercise/easy?
+
+创建 tests 目录，符号链接所有文件到 tests目录下， cargo 自动就会发现。 注意cargo test 不会自动找子目录下的测试，所以 tests/easy 没用
+
+```
+# at Rust-Professional root dir
+mkdir tests
+ln -s exercises/easy/* tests
+```
+
+之后只需要跑对应的测试即可
+
+```
+cargo test --test algorithm5
+```
