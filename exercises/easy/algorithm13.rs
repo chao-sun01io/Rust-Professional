@@ -1,8 +1,8 @@
 /*
     Anagram Check
-    Given two strings, check if they are anagrams of each other. 
-    Anagrams are words or phrases formed by rearranging the letters of another, 
-    using all the original letters exactly once. 
+    Given two strings, check if they are anagrams of each other.
+    Anagrams are words or phrases formed by rearranging the letters of another,
+    using all the original letters exactly once.
     The strings may contain spaces or punctuation, but you need to ignore them while checking.
 
     You need to implement the function `are_anagrams(s1: String, s2: String) -> bool`.
@@ -11,11 +11,36 @@
     Hint: Consider normalizing the strings by removing non-alphabetical characters and converting to lowercase before checking.
 */
 
-use std::fmt::{self, Display, Formatter};
+use std::{
+    collections::HashMap,
+    fmt::{self, Display, Formatter},
+    hash::Hash,
+};
 
 pub fn are_anagrams(s1: String, s2: String) -> bool {
-    // TODO: Implement the logic to check if two strings are anagrams
-    false // Placeholder return value
+    // Implement the logic to check if two strings are anagrams
+    let mut cleaned1 = s1.to_lowercase();
+    cleaned1.retain(|x| x.is_alphabetic());
+    let cleaned1 = cleaned1.chars();
+
+    let cleaned2: Vec<char> = s2
+        .to_lowercase()
+        .chars()
+        .filter(|c| c.is_alphabetic())
+        .collect();
+    // Bucket
+
+    let mut freq1: HashMap<char, i32> = HashMap::new();
+    for c in cleaned1 {
+        *freq1.entry(c).or_insert(0) += 1;
+    }
+
+    let mut freq2: HashMap<char, i32> = HashMap::new();
+    for c in cleaned2 {
+        *freq2.entry(c).or_insert(0) += 1;
+    }
+
+    freq1 == freq2
 }
 
 #[cfg(test)]
