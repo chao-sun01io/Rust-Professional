@@ -1,8 +1,7 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
-
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -37,7 +36,18 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        // percolate up
+
+        self.items.push(value);
+        self.count += 1;
+        // Start at the last element (count) because the heap is 1-based index.
+        let mut cur = self.count;
+        let mut parent = self.parent_idx(cur);
+        while cur > 1 && (self.comparator)(&self.items[cur], &self.items[parent]) {
+            self.items.swap(cur, parent);
+            cur = parent;
+            parent = self.parent_idx(cur);
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -56,9 +66,14 @@ where
         self.left_child_idx(idx) + 1
     }
 
-    fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+    fn highest_priority_child_idx(&self, idx: usize) -> usize {
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+        if right <= self.count && ((self.comparator)(&self.items[right], &self.items[left])) {
+            right
+        } else {
+            left
+        }
     }
 }
 
@@ -84,8 +99,26 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.is_empty() {
+            return None;
+        }
+
+        let root = self.items.swap_remove(1);
+        self.count -= 1;
+
+        if !self.is_empty() {
+            let mut cur = 1;
+            while self.children_present(cur) {
+                let child = self.highest_priority_child_idx(cur);
+                if (self.comparator)(&self.items[cur], &self.items[child]) {
+                    break;
+                }
+                self.items.swap(cur, child);
+                cur = child;
+            }
+        }
+
+        Some(root)
     }
 }
 
@@ -129,6 +162,7 @@ mod tests {
         heap.add(2);
         heap.add(9);
         heap.add(11);
+
         assert_eq!(heap.len(), 4);
         assert_eq!(heap.next(), Some(2));
         assert_eq!(heap.next(), Some(4));
