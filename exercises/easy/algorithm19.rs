@@ -1,19 +1,33 @@
 /*
     Nth Fibonacci Number
-    Implement a function to calculate the `n`th Fibonacci number. 
+    Implement a function to calculate the `n`th Fibonacci number.
     The Fibonacci sequence is defined as follows:
     F(0) = 0, F(1) = 1, F(n) = F(n-1) + F(n-2) for n > 1.
 
     You need to implement the function `fib(n: i32) -> i32` to return the `n`th Fibonacci number.
-    
+
     Hint: Consider using matrix exponentiation to solve the problem in O(log n) time complexity.
 */
 
-use std::fmt::{self, Display, Formatter};
+use std::{
+    fmt::{self, Display, Formatter},
+    mem,
+};
 
 pub fn fib(n: i32) -> i32 {
     // TODO: Implement the logic to calculate the nth Fibonacci number using matrix exponentiation
-    0 // Placeholder return value
+    if n == 0 {
+        return 0;
+    }
+    let mut memos = vec![0; (n + 1) as usize];
+    if n >= 1 {
+        memos[1] = 1;
+    }
+
+    for i in 2..(n + 1) as usize {
+        memos[i] = memos[i - 1] + memos[i - 2];
+    }
+    return memos[n as usize];
 }
 
 #[cfg(test)]
