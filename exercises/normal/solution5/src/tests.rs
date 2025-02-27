@@ -20,6 +20,8 @@ mod tests {
             let result = odd_fibnacci_sum(*input1);
             if result == *expected {
                 total_score += 20.0;
+            }else{
+                println!("input {:?} result {}",(*input1,*expected),(result));
             }
         }
         println!("Total score: {:.2}", total_score);
