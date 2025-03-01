@@ -28,7 +28,7 @@ fn parse_date(input: &str) -> (u32, u32, u32) {
 
     let year = parts[0].parse::<u32>().unwrap();
     let month = parts[1].parse::<u32>().unwrap();
-    let day = parts[3].parse::<u32>().unwrap();
+    let day = parts[2].parse::<u32>().unwrap();
     // Validate month range
     // if month < 1 || month > 12 {
     //     return None;
@@ -75,13 +75,20 @@ fn nth_week_of_2025(nth_day_of_year: u32) -> u32 {
 
     if nth_day_of_year <= 5 {
         1
-    } else {
-        (nth_day_of_year - 5) / 7 + 2
+    } else if nth_day_of_year >=363 {
+        1 // 1st week of 2026
+    } else{
+        ((nth_day_of_year - 5) as f32 / 7.0).ceil() as u32 + 1
     }
 }
 
 fn weekday_of_2025(nth_day_of_year: u32) -> u32 {
-    (nth_day_of_year % 7 + 2) % 7
+   let n = (nth_day_of_year % 7 + 2) % 7;
+   if n == 0 {
+       7
+   }else {
+       n
+   }
 }
 
 fn days_left_to_next_spring_festival_2025(year: u32, month: u32, day: u32) -> u32 {
@@ -128,9 +135,11 @@ fn days_to_next_market_open_day(year: u32, month: u32, day: u32) -> u32 {
         closed_days.insert(nth_day_of_year(datetuple.0, datetuple.1, datetuple.2));
     }
 
-    let d = nth_day_of_year(year, month, day);
-    let mut next_open_day = d;
-    for next in d..365 {
+    let d: u32 = nth_day_of_year(year, month, day);
+ 
+    let mut next_open_day = 367;
+    // 2025
+    for next in d+1..365 {
         let weekday = weekday_of_2025(next);
         if weekday == 6 || weekday == 7 || closed_days.contains(&next) {
             continue;
@@ -139,5 +148,10 @@ fn days_to_next_market_open_day(year: u32, month: u32, day: u32) -> u32 {
             break;
         }
     }
-    next_open_day - d
+
+    if d == 365 {
+        next_open_day = 367
+    }
+    // println!("{} - {}", d, next_open_day);
+    next_open_day - d - 1
 }
